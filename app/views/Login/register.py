@@ -1,5 +1,5 @@
 from . import login_view
-from flask import request,jsonify
+from flask import request,jsonify,request
 from app.models.user import UserModel,VerificationCodeModel
 from datetime import datetime,timedelta
 from flask_mail import Mail,Message
@@ -7,7 +7,6 @@ from app import db,mail
 import random
 
 def sendEmail(to):
-    print(to)
     code = ''.join(random.choice('0123456789') for i in range(6))
     msg = Message(subject='问答系统',recipients=[to],body=f'【问答系统】登录验证码 {code},10分钟有效,请勿告知他人。')
     mail.send(msg)

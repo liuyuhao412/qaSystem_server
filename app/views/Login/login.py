@@ -6,6 +6,7 @@ from app import db
 
 @login_view.route('/login',methods=['POST'])
 def login():
+    ip = request.remote_addr
     username = request.args.get('Username').strip()
     password = request.args.get('Password').strip()
     if username == '':
@@ -18,7 +19,7 @@ def login():
             if loginUser.password == password:
                 if loginUser.role == 'admin':
                     time = datetime.utcnow() + timedelta(hours=8)
-                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,login_time=time)
+                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,login_time=time,ip=ip)
                     db.session.add(LoginLog)
                     db.session.commit()
                     return  jsonify({'code':'2', 'msg': 'Login successful'})
