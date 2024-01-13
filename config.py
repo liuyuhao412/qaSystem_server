@@ -19,6 +19,16 @@ class DevelopmengConfig(Config):
     SQLALCHEMY_DATABASE_URI = DB_URI
     SQLALCHEMY_TRACK_MODIFICATIONS=False #动态追踪修改设置，没有设置会有警告
     SQLALCHEMY_ECHO = False #   #查询时显示原始SQL语句
+    
+    MAIL_SERVER = 'smtp.163.com'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_DEBUG = True
+    MAIL_USERNAME = 'liuyuhaoweb@163.com'
+    MAIL_PASSWORD = 'ELCUNEUDEMBQXKRV'
+    MAIL_DEFAULT_SENDER = 'liuyuhaoweb@163.com'
+
 
 class TestingConfig(Config):
     TESTING = True

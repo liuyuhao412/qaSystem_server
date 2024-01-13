@@ -4,3 +4,4 @@ Flask-Script==2.0.6
 pymysql==1.0.2
 markupsafe==2.0.1
 sqlalchemy==1.4.46
+Flask-Mail==0.9.1

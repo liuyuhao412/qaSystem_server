@@ -8,18 +8,19 @@ class UserModel(db.Model):
     password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     role = db.Column(db.String(20), default='user')
-    registration_time = db.Column(db.DateTime, default=datetime.utcnow())
+    registration_time = db.Column(db.DateTime,nullable=False)
 
 class VerificationCodeModel(db.Model):
     __tablename__ = "verification_code"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     code = db.Column(db.String(6), nullable=False)
-    expiration_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow() + timedelta(minutes=10))
+    expiration_time = db.Column(db.DateTime, nullable=False)
 
 class LoginLogModel(db.Model):
     __tablename__ = "login_log"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     username = db.Column(db.String(255), nullable=False)
-    login_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    ip = db.Column(db.String(255), nullable=False)
+    login_time = db.Column(db.DateTime, nullable=False)
