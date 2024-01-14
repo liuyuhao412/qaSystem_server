@@ -14,7 +14,8 @@ class VerificationCodeModel(db.Model):
     __tablename__ = "verification_code"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    code = db.Column(db.String(6), nullable=False)
+    code = db.Column(db.String(255), nullable=False)
+    created_time = db.Column(db.DateTime, nullable=False)
     expiration_time = db.Column(db.DateTime, nullable=False)
 
 class LoginLogModel(db.Model):

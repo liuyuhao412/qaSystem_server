@@ -1,15 +1,38 @@
-from . import login_view
+from . import login_view,md5_encryption
 from flask import request,jsonify,request
 from app.models.user import UserModel,VerificationCodeModel
 from datetime import datetime,timedelta
 from flask_mail import Mail,Message
 from app import db,mail
+from run import app
 import random
+import re 
+import threading
 
-def sendEmail(to):
+def is_valid_email(email):
+    # 正则表达式用于检查邮箱格式
+    email_pattern = r'^\S+@\S+\.\S+$' 
+    return re.match(email_pattern, email) is not None
+
+def check_password(password):
+    # 密码要求：8位以上，包含数字、大小写字母和特殊字符
+    pattern = re.compile(r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_+=])[0-9a-zA-Z!@#$%^&*()-_+=]{8,}$')
+    
+    # 使用正则表达式检查密码格式
+    if pattern.match(password):
+        return True
+    else:
+        return False
+def send_email_async(app,msg):
+    with app.app_context():
+        mail.send(msg)
+
+def send_verification_code(to):
     code = ''.join(random.choice('0123456789') for i in range(6))
     msg = Message(subject='问答系统',recipients=[to],body=f'【问答系统】登录验证码 {code},10分钟有效,请勿告知他人。')
-    mail.send(msg)
+    thread = threading.Thread(target=send_email_async, args=(app,msg))
+    thread.start()
+    code = md5_encryption(code)
     return code
 
 @login_view.route('/send_code',methods=['POST'])
@@ -22,8 +45,19 @@ def send_code():
         if registerUser:
             return jsonify({'code':'0', 'msg': 'email is already'})
         else:
-            code = sendEmail(email)
-            # VerificationCode = VerificationCodeModel()
+            code = send_verification_code(email)
+            created_time = datetime.utcnow() + timedelta(hours=8)
+            expiration_time = created_time + timedelta(minutes=10)
+            VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==email).first()
+            if VerificationCode:
+                VerificationCode.code = code
+                VerificationCode.created_time = created_time
+                VerificationCode.expiration_time = expiration_time
+                db.session.commit()
+            else:
+                VerificationCode = VerificationCodeModel(email=email,code=code,created_time=created_time,expiration_time=expiration_time)
+                db.session.add(VerificationCode)
+                db.session.commit()
             return jsonify({'code':'1', 'msg': 'Verification code sent successfully'})
 
 @login_view.route('/register',methods=['POST'])
@@ -32,14 +66,28 @@ def register():
     code = request.args.get('Code').strip()
     password = request.args.get('Password').strip()
     confirme_password = request.args.get('ConfirmePassword').strip()
+    time = datetime.utcnow() + timedelta(hours=8)
+    VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==username).first()
+    if VerificationCode:
+        if VerificationCode.expiration_time < time:
+            VerificationCode_code = ''
+        else:
+            VerificationCode_code = VerificationCode.code
+
     if username == '':
-        return jsonify({'code':'0', 'msg': 'Please input username'})
+        return jsonify({'code':'0', 'msg': 'Please input email'})
+    elif not is_valid_email(username):
+        return jsonify({'code':'0', 'msg': 'Email format is wrong'})
     elif code == '':
         return jsonify({'code':'0', 'msg': 'Please input code'})
     elif password =='':
         return jsonify({'code':'0', 'msg': 'Please input password'})
+    elif not check_password(password):
+        return jsonify({'code':'0', 'msg': 'Password format is more 8 characters,have number,lowercase and uppercase letter,sepcial character'})
     elif confirme_password == '':
         return jsonify({'code':'0', 'msg': 'Please input password again'})
+    elif md5_encryption(code) != VerificationCode_code:
+        return jsonify({'code':'0', 'msg': 'Verification code is wrong'})
     elif password != confirme_password:
         return jsonify({'code':'0', 'msg': 'Two passwords do not match'})
     else:
@@ -47,4 +95,9 @@ def register():
         if registerUser:
             return jsonify({'code':'0', 'msg': 'Username is already'})
         else:
+            registration_time = datetime.utcnow() + timedelta(hours=8)
+            md5_pwd = md5_encryption(password)
+            newUser = UserModel(username=username, password=md5_pwd,email=username,registration_time=registration_time)
+            db.session.add(newUser)
+            db.session.commit()
             return jsonify({'code':'1', 'msg': 'Register successfully'})

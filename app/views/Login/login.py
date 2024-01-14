@@ -1,4 +1,4 @@
-from . import login_view
+from . import login_view,md5_encryption
 from flask import request,jsonify
 from app.models.user import UserModel,LoginLogModel
 from datetime import datetime,timedelta
@@ -6,7 +6,9 @@ from app import db
 
 @login_view.route('/login',methods=['POST'])
 def login():
-    ip = request.remote_addr
+    ip = request.headers.get('X-Forwarded-For')
+    if not ip:
+        ip = request.remote_addr
     username = request.args.get('Username').strip()
     password = request.args.get('Password').strip()
     if username == '':
@@ -16,7 +18,7 @@ def login():
     else:
         loginUser = UserModel.query.filter(UserModel.username==username).first()
         if loginUser:
-            if loginUser.password == password:
+            if loginUser.password == md5_encryption(password):
                 if loginUser.role == 'admin':
                     time = datetime.utcnow() + timedelta(hours=8)
                     LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,login_time=time,ip=ip)
@@ -24,7 +26,8 @@ def login():
                     db.session.commit()
                     return  jsonify({'code':'2', 'msg': 'Login successful'})
                 else:
-                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username)
+                    time = datetime.utcnow() + timedelta(hours=8)
+                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,login_time=time,ip=ip)
                     db.session.add(LoginLog)
                     db.session.commit()
                     return jsonify({'code':'1', 'msg': 'Login successful'}) 
