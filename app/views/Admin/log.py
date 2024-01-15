@@ -10,7 +10,6 @@ def user_list():
     username = request.args.get('username')
     if not username:
         username = ''
-
     query = LoginLogModel.query
     if username!='':
         query = query.filter(LoginLogModel.username.like('%{username}%'.format(username=username)))
