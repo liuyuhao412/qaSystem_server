@@ -25,3 +25,13 @@ class LoginLogModel(db.Model):
     username = db.Column(db.String(255), nullable=False)
     ip = db.Column(db.String(255), nullable=False)
     login_time = db.Column(db.DateTime, nullable=False)
+
+    def to_json(self):
+        time = self.login_time
+        time = time.strftime("%Y-%m-%d %H:%M:%S")
+        return {
+            'id': self.id,
+            'username':self.username,
+            'ip':self.ip,
+            'login_time':time,
+        }

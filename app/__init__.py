@@ -12,5 +12,7 @@ def create_app(config_name):
     mail.init_app(app)
     from app.views.Login import login_view as login_view_blueprint
     app.register_blueprint(login_view_blueprint)
+    from app.views.Admin import admin_view as admin_view_blueprint
+    app.register_blueprint(admin_view_blueprint)
     return app
 

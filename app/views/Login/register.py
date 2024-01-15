@@ -32,10 +32,10 @@ def send_verification_code(to):
     msg = Message(subject='问答系统',recipients=[to],body=f'【问答系统】登录验证码 {code},10分钟有效,请勿告知他人。')
     thread = threading.Thread(target=send_email_async, args=(app,msg))
     thread.start()
-    code = md5_encryption(code)
+    # code = md5_encryption(code)
     return code
 
-@login_view.route('/send_code',methods=['POST'])
+@login_view.route('/register/send_code',methods=['POST'])
 def send_code():
     email = request.args.get('Username').strip()
     if email == '':
@@ -86,7 +86,9 @@ def register():
         return jsonify({'code':'0', 'msg': 'Password format is more 8 characters,have number,lowercase and uppercase letter,sepcial character'})
     elif confirme_password == '':
         return jsonify({'code':'0', 'msg': 'Please input password again'})
-    elif md5_encryption(code) != VerificationCode_code:
+    # elif md5_encryption(code) != VerificationCode_code:
+    #     return jsonify({'code':'0', 'msg': 'Verification code is wrong'})
+    elif code != VerificationCode_code:
         return jsonify({'code':'0', 'msg': 'Verification code is wrong'})
     elif password != confirme_password:
         return jsonify({'code':'0', 'msg': 'Two passwords do not match'})
