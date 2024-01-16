@@ -7,15 +7,15 @@ def log_list():
     page = request.args.get('page', type=int)
     limit =  request.args.get('limit', type=int)
     
-    username = request.args.get('username')
+    email = request.args.get('email')
     role = request.args.get('role')
-    if not username:
-        username = ''
+    if not email:
+        email = ''
     if not role:
         role = ''
     query = LoginLogModel.query
-    if username!='':
-        query = query.filter(LoginLogModel.username.like('%{username}%'.format(username=username)))
+    if email!='':
+        query = query.filter(LoginLogModel.email.like('%{email}%'.format(email=email)))
     if role!='':
         query = query.filter(LoginLogModel.role.like('%{role}%'.format(role=role)))
     count = query.count() # 符合条件的记录总数

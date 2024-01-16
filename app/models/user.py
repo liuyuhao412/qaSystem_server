@@ -4,21 +4,19 @@ from datetime import datetime,timedelta
 class UserModel(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer,primary_key=True, autoincrement=True)
-    username = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), default='user')
-    registration_time = db.Column(db.DateTime,nullable=False)
+    register_time = db.Column(db.DateTime,nullable=False)
 
     def to_json(self):
-        time = self.registration_time
+        time = self.register_time
         time = time.strftime("%Y-%m-%d %H:%M:%S")
         return {
             'id': self.id,
-            'username':self.username,
             'email':self.email,
             'role':self.role,
-            'registration_time':time,
+            'register_time':time,
         }
 
 
@@ -54,7 +52,7 @@ class LoginLogModel(db.Model):
     __tablename__ = "login_log"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    username = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), nullable=False)
     ip = db.Column(db.String(255), nullable=False)
     login_time = db.Column(db.DateTime, nullable=False)
@@ -64,7 +62,7 @@ class LoginLogModel(db.Model):
         time = time.strftime("%Y-%m-%d %H:%M:%S")
         return {
             'id': self.id,
-            'username':self.username,
+            'email':self.email,
             'role':self.role,
             'ip':self.ip,
             'login_time':time,

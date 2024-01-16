@@ -7,12 +7,12 @@ def code_list():
     page = request.args.get('page', type=int)
     limit =  request.args.get('limit', type=int)
     
-    username = request.args.get('username')
-    if not username:
-        username = ''
+    email = request.args.get('email')
+    if not email:
+        email = ''
     query = VerificationCodeModel.query
-    if username!='':
-        query = query.filter(VerificationCodeModel.email.like('%{username}%'.format(email=username)))
+    if email!='':
+        query = query.filter(VerificationCodeModel.email.like('%{email}%'.format(email=email)))
     count = query.count() # 符合条件的记录总数
     pagination = query.paginate(page,per_page=limit,error_out=False)
     codes = pagination.items

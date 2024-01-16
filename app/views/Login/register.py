@@ -37,9 +37,11 @@ def send_verification_code(to):
 
 @login_view.route('/register/send_code',methods=['POST'])
 def send_code():
-    email = request.args.get('Username').strip()
+    email = request.args.get('Email').strip()
     if email == '':
         return jsonify({'code':'0', 'msg': 'Please input email'})
+    elif not is_valid_email(email):
+        return jsonify({'code':'0', 'msg': 'Email format is wrong'})
     else:
         registerUser = UserModel.query.filter(UserModel.email==email).first()
         if registerUser:
@@ -62,12 +64,12 @@ def send_code():
 
 @login_view.route('/register',methods=['POST'])
 def register():
-    username = request.args.get('Username').strip()
+    email = request.args.get('Email').strip()
     code = request.args.get('Code').strip()
     password = request.args.get('Password').strip()
     confirme_password = request.args.get('ConfirmePassword').strip()
     time = datetime.utcnow() + timedelta(hours=8)
-    VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==username).first()
+    VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==email).first()
     if VerificationCode:
         VerificationCode_is_valid = VerificationCode.is_valid
         if VerificationCode.expiration_time < time:
@@ -78,9 +80,9 @@ def register():
         VerificationCode_is_valid=''
         VerificationCode_code = ''
 
-    if username == '':
+    if email == '':
         return jsonify({'code':'0', 'msg': 'Please input email'})
-    elif not is_valid_email(username):
+    elif not is_valid_email(email):
         return jsonify({'code':'0', 'msg': 'Email format is wrong'})
     elif code == '':
         return jsonify({'code':'0', 'msg': 'Please input code'})
@@ -99,14 +101,14 @@ def register():
     elif password != confirme_password:
         return jsonify({'code':'0', 'msg': 'Two passwords do not match'})
     else:
-        registerUser = UserModel.query.filter(UserModel.username==username).first()
+        registerUser = UserModel.query.filter(UserModel.email==email).first()
         if registerUser:
-            return jsonify({'code':'0', 'msg': 'Username is already'})
+            return jsonify({'code':'0', 'msg': 'Email is already'})
         else:
-            registration_time = datetime.utcnow() + timedelta(hours=8)
+            register_time = datetime.utcnow() + timedelta(hours=8)
             md5_pwd = md5_encryption(password)
-            newUser = UserModel(username=username, password=md5_pwd,email=username,registration_time=registration_time)
-            VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==username).first()
+            newUser = UserModel(email=email, password=md5_pwd,register_time=register_time)
+            VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==email).first()
             VerificationCode.is_valid = '无效'
             db.session.add(newUser)
             db.session.commit()

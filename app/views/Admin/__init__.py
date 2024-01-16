@@ -1,7 +1,15 @@
 from flask import Blueprint
+from hashlib import md5
 
 admin_view = Blueprint('admin_view',__name__)
 
-from .log import *
-from .code import *
-from .user import *
+def md5_encryption(input):
+    m = md5()
+    m.update(input.encode())
+    output = m.hexdigest()
+    return output
+
+
+from .admin_log import *
+from .admin_code import *
+from .admin_user import *
