@@ -10,6 +10,18 @@ class UserModel(db.Model):
     role = db.Column(db.String(20), default='user')
     registration_time = db.Column(db.DateTime,nullable=False)
 
+    def to_json(self):
+        time = self.registration_time
+        time = time.strftime("%Y-%m-%d %H:%M:%S")
+        return {
+            'id': self.id,
+            'username':self.username,
+            'email':self.email,
+            'role':self.role,
+            'registration_time':time,
+        }
+
+
 class VerificationCodeModel(db.Model):
     __tablename__ = "verification_code"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -4,3 +4,4 @@ admin_view = Blueprint('admin_view',__name__)
 
 from .log import *
 from .code import *
+from .user import *

@@ -2,7 +2,7 @@ from . import admin_view
 from flask import request,jsonify
 from app.models.user import VerificationCodeModel
 
-@admin_view.route('/admin_code/get_code',methods=['GET','POST'])
+@admin_view.route('/admin_code/get_code',methods=['POST'])
 def code_list():
     page = request.args.get('page', type=int)
     limit =  request.args.get('limit', type=int)
