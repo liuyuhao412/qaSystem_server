@@ -25,14 +25,14 @@ def login():
                     LoginLog = LoginLogModel(user_id=loginUser.id,email=loginUser.email,role=role,login_time=time,ip=ip)
                     db.session.add(LoginLog)
                     db.session.commit()
-                    return  jsonify({'code':'2', 'msg': 'Login successful'})
+                    return  jsonify({'code':'2', 'token':'admin_token','msg': 'Login successful'})
                 else:
                     time = datetime.utcnow() + timedelta(hours=8)
                     role = loginUser.role
                     LoginLog = LoginLogModel(user_id=loginUser.id,email=loginUser.email,role=role,login_time=time,ip=ip)
                     db.session.add(LoginLog)
                     db.session.commit()
-                    return jsonify({'code':'1', 'msg': 'Login successful'}) 
+                    return jsonify({'code':'1', 'token':'user_token','msg': 'Login successful'}) 
             else:
                 return jsonify({'code':'0','msg':'Username or password error'})
         else:
