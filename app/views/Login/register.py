@@ -4,7 +4,7 @@ from app.models.user import UserModel,VerificationCodeModel
 from datetime import datetime,timedelta
 from flask_mail import Mail,Message
 from app import db,mail
-from run import app
+from manager import app
 import random
 import re 
 import threading
@@ -29,7 +29,7 @@ def send_email_async(app,msg):
 
 def send_verification_code(to):
     code = ''.join(random.choice('0123456789') for i in range(6))
-    msg = Message(subject='问答系统',recipients=[to],body=f'【问答系统】登录验证码 {code},10分钟有效,请勿告知他人。')
+    msg = Message(subject='问答系统',recipients=[to],body=f'【问答系统】注册验证码 {code},10分钟有效,请勿告知他人。')
     thread = threading.Thread(target=send_email_async, args=(app,msg))
     thread.start()
     # code = md5_encryption(code)
@@ -69,10 +69,14 @@ def register():
     time = datetime.utcnow() + timedelta(hours=8)
     VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==username).first()
     if VerificationCode:
+        VerificationCode_is_valid = VerificationCode.is_valid
         if VerificationCode.expiration_time < time:
             VerificationCode_code = ''
         else:
-            VerificationCode_code = VerificationCode.code
+            VerificationCode_code = VerificationCode.code 
+    else:
+        VerificationCode_is_valid=''
+        VerificationCode_code = ''
 
     if username == '':
         return jsonify({'code':'0', 'msg': 'Please input email'})
@@ -82,14 +86,16 @@ def register():
         return jsonify({'code':'0', 'msg': 'Please input code'})
     elif password =='':
         return jsonify({'code':'0', 'msg': 'Please input password'})
-    elif not check_password(password):
-        return jsonify({'code':'0', 'msg': 'Password format is more 8 characters,have number,lowercase and uppercase letter,sepcial character'})
     elif confirme_password == '':
         return jsonify({'code':'0', 'msg': 'Please input password again'})
     # elif md5_encryption(code) != VerificationCode_code:
     #     return jsonify({'code':'0', 'msg': 'Verification code is wrong'})
     elif code != VerificationCode_code:
         return jsonify({'code':'0', 'msg': 'Verification code is wrong'})
+    elif VerificationCode_is_valid != '有效':
+        return jsonify({'code':'0', 'msg': 'Verification code is wrong'})
+    elif not check_password(password):
+        return jsonify({'code':'0', 'msg': 'Password format is more 8 characters,have number,lowercase and uppercase letter,sepcial character'})
     elif password != confirme_password:
         return jsonify({'code':'0', 'msg': 'Two passwords do not match'})
     else:
@@ -100,6 +106,8 @@ def register():
             registration_time = datetime.utcnow() + timedelta(hours=8)
             md5_pwd = md5_encryption(password)
             newUser = UserModel(username=username, password=md5_pwd,email=username,registration_time=registration_time)
+            VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==username).first()
+            VerificationCode.is_valid = '无效'
             db.session.add(newUser)
             db.session.commit()
             return jsonify({'code':'1', 'msg': 'Register successfully'})

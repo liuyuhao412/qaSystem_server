@@ -21,13 +21,15 @@ def login():
             if loginUser.password == md5_encryption(password):
                 if loginUser.role == 'admin':
                     time = datetime.utcnow() + timedelta(hours=8)
-                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,login_time=time,ip=ip)
+                    role = loginUser.role
+                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,role=role,login_time=time,ip=ip)
                     db.session.add(LoginLog)
                     db.session.commit()
                     return  jsonify({'code':'2', 'msg': 'Login successful'})
                 else:
                     time = datetime.utcnow() + timedelta(hours=8)
-                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,login_time=time,ip=ip)
+                    role = loginUser.role
+                    LoginLog = LoginLogModel(user_id=loginUser.id,username=loginUser.username,role=role,login_time=time,ip=ip)
                     db.session.add(LoginLog)
                     db.session.commit()
                     return jsonify({'code':'1', 'msg': 'Login successful'}) 
