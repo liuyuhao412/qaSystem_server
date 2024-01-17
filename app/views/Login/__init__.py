@@ -8,5 +8,10 @@ def md5_encryption(input):
     output = m.hexdigest()
     return output
 
+def generate_random_token(length=32):
+    token = secrets.token_hex(length)
+    md5_token = md5_encryption(token)
+    return md5_token
+
 from .login import *
 from .register import *

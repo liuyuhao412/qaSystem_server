@@ -107,7 +107,7 @@ def register():
         else:
             register_time = datetime.utcnow() + timedelta(hours=8)
             md5_pwd = md5_encryption(password)
-            newUser = UserModel(email=email, password=md5_pwd,register_time=register_time)
+            newUser = UserModel(username=email,email=email, password=md5_pwd,register_time=register_time)
             VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==email).first()
             VerificationCode.is_valid = '无效'
             db.session.add(newUser)

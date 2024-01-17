@@ -4,6 +4,7 @@ from datetime import datetime,timedelta
 class UserModel(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer,primary_key=True, autoincrement=True)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), default='user')
@@ -14,6 +15,7 @@ class UserModel(db.Model):
         time = time.strftime("%Y-%m-%d %H:%M:%S")
         return {
             'id': self.id,
+            'username':self.username,
             'email':self.email,
             'role':self.role,
             'register_time':time,
@@ -52,7 +54,7 @@ class LoginLogModel(db.Model):
     __tablename__ = "login_log"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    email = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), nullable=False)
     ip = db.Column(db.String(255), nullable=False)
     login_time = db.Column(db.DateTime, nullable=False)
@@ -62,7 +64,7 @@ class LoginLogModel(db.Model):
         time = time.strftime("%Y-%m-%d %H:%M:%S")
         return {
             'id': self.id,
-            'email':self.email,
+            'username':self.username,
             'role':self.role,
             'ip':self.ip,
             'login_time':time,

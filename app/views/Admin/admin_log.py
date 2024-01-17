@@ -6,16 +6,15 @@ from app.models.user import LoginLogModel
 def log_list():
     page = request.args.get('page', type=int)
     limit =  request.args.get('limit', type=int)
-    
-    email = request.args.get('email')
+    username = request.args.get('username')
     role = request.args.get('role')
-    if not email:
-        email = ''
+    if not username:
+        username = ''
     if not role:
         role = ''
     query = LoginLogModel.query
-    if email!='':
-        query = query.filter(LoginLogModel.email.like('%{email}%'.format(email=email)))
+    if username!='':
+        query = query.filter(LoginLogModel.username.like('%{username}%'.format(username=username)))
     if role!='':
         query = query.filter(LoginLogModel.role.like('%{role}%'.format(role=role)))
     count = query.count() # 符合条件的记录总数
