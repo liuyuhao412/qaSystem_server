@@ -79,7 +79,9 @@ def delete_user():
     Logs = LoginLogModel.query.filter(LoginLogModel.user_id == user.id).all()
     for Log in Logs:
         db.session.delete(Log)
+    VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==email).first()
     db.session.delete(user) 
+    db.session.delete(VerificationCode) 
     db.session.commit()
     return  jsonify({'code':1,'msg':'删除用户信息成功'})
 

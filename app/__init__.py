@@ -14,5 +14,7 @@ def create_app(config_name):
     app.register_blueprint(login_view_blueprint)
     from app.views.Admin import admin_view as admin_view_blueprint
     app.register_blueprint(admin_view_blueprint)
+    from app.views.User import user_view as user_view_blueprint
+    app.register_blueprint(user_view_blueprint)
     return app
 
