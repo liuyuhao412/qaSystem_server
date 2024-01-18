@@ -23,7 +23,19 @@ def check_password(password):
         return True
     else:
         return False
+    
+def to_json(input_list):
+    result_list = [{'id': idx + 1, 'kb_name': item} for idx, item in enumerate(input_list)]
+    return result_list
+
+def paginate(data_list, page_number, page_size):
+    start_index = (page_number - 1) * page_size
+    end_index = start_index + page_size
+    paginated_data = data_list[start_index:end_index]
+    return paginated_data
+
 
 from .admin_log import *
 from .admin_code import *
 from .admin_user import *
+from .model.admin_model import *

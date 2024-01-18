@@ -5,3 +5,4 @@ pymysql==1.0.2
 markupsafe==2.0.1
 sqlalchemy==1.4.46
 Flask-Mail==0.9.1
+requests==2.31.0
