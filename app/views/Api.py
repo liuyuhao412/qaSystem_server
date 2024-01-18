@@ -26,36 +26,42 @@ def create_knowledge(name):
 @name  知识库的名称  str
 '''
 def delete_knowledge(name):
-    response = requests.post("http://172.17.0.42:7861/knowledge_base/delete_knowledge_base",json=name,headers={"Content-Type":"application/json"})
+    response = requests.post(base_url+"/knowledge_base/delete_knowledge_base",json=name,headers={"Content-Type":"application/json"})
     json_response = response.json()
     print(json_response)
     msg = json_response['msg']
     code = json_response['code']
     return code,msg
+'''
+获取知识库里的文件列表
+@name  知识库的名称  str
+'''
+def get_list_files(name):
+    response = requests.get("http://172.17.0.42:7861/knowledge_base/list_files?knowledge_base_name="+name,headers={"Content-Type":"application/json"})
+    json_response = response.json()
+    msg = json_response['msg']
+    code = json_response['code']
+    data = json_response['data']
+    count = len(json_response['data'])
+    if code == 200:
+        msg = '查询 {name} 向量库成功'.format(name=name)
+    return code,msg,data,count
+
+def delete_docs(name,file):
+    response = requests.post("http://172.17.0.42:7861/knowledge_base/delete_docs",json={
+    "knowledge_base_name": name,
+    "file_names": [file],
+    "delete_content": False,
+    "not_refresh_vs_cache": False
+    },headers={"Content-Type":"application/json"})
+    json_response = response.json()
+    msg = json_response['msg']
+    code = json_response['code']
+    if code == 200:
+        msg = '删除 {name} 向量库中的 {file} 成功'.format(name=name,file=file)
+    return code,msg
 
 
-
-
-# import requests
-
-    
-# #删除知识库
-# # @name  知识库的名称  str
-# def delete_kb(name):
-#     response = requests.post("http://172.17.0.42:7861/knowledge_base/delete_knowledge_base",json=name,headers={"Content-Type":"application/json"})
-#     json_response = response.json()
-#     print(json_response)
-
-# kb_name = 'test'
-# delete_kb(kb_name)
-    
-# #获取知识库里的文件列表
-# #@name  知识库的名称  str
-# def get_list_files(name):
-#     response = requests.get("http://172.17.0.42:7861/knowledge_base/list_files?knowledge_base_name="+name,headers={"Content-Type":"application/json"})
-#     json_response = response.json()
-#     print(json_response)
-# # get_list_files('Olympics')
 
 # #上传文件到知识库并进行向量化
 # #@file_list  上传的文件(单文件，多文件) 文件列表list
@@ -84,15 +90,7 @@ def delete_knowledge(name):
 
 # # upload_docs(file_list={'files':open('test1.txt','r')},name="test")
 
-# def delete_docs(name,file_list):
-#     response = requests.post("http://172.17.0.42:7861/knowledge_base/delete_docs",json={
-#     "knowledge_base_name": name,
-#     "file_names": file_list,
-#     "delete_content": False,
-#     "not_refresh_vs_cache": False
-#     },headers={"Content-Type":"application/json"})
-#     json_response = response.json()
-#     print(json_response)
+
 
 # # delete_docs('test',["test1.txt"])
     

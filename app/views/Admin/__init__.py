@@ -25,7 +25,7 @@ def check_password(password):
         return False
     
 def to_json(input_list):
-    result_list = [{'id': idx + 1, 'kb_name': item} for idx, item in enumerate(input_list)]
+    result_list = [{'id': idx + 1, 'name': item} for idx, item in enumerate(input_list)]
     return result_list
 
 def paginate(data_list, page_number, page_size):
