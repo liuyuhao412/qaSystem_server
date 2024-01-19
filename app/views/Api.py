@@ -46,7 +46,11 @@ def get_list_files(name):
     if code == 200:
         msg = '查询 {name} 向量库成功'.format(name=name)
     return code,msg,data,count
-
+'''
+获取知识库里的文件列表
+@name  知识库的名称  str
+@file  文件名称  str
+'''
 def delete_docs(name,file):
     response = requests.post("http://172.17.0.42:7861/knowledge_base/delete_docs",json={
     "knowledge_base_name": name,
@@ -60,49 +64,33 @@ def delete_docs(name,file):
     if code == 200:
         msg = '删除 {name} 向量库中的 {file} 成功'.format(name=name,file=file)
     return code,msg
+'''
+上传文件到知识库并进行向量化
+@file_list  上传的文件(单文件，多文件) 文件列表list
+@name  知识库名称  str
+@chunk_size  知识库中单段文本最大长度  int
+@chunk_overlap 相邻文本重合长度  int
+@zh_title_enhance  是否开启中文标题加强  boolean
+'''
+def upload_docs(file_list,name,chunk_size=250,chunk_overlap=50,zh_title_enhance=False):
+    response = requests.post("http://172.17.0.42:7861/knowledge_base/upload_docs",files=file_list,data={
+        "knowledge_base_name":name,
+        "override":False,
+        "to_vector_store":True,
+        "chunk_size":chunk_size,
+        "chunk_overlap":chunk_overlap,
+        "zh_title_enhance":zh_title_enhance,
+        "docs":'',
+        "not_refresh_vs_cache":False
+    })
+    json_response = response.json()
+    print(json_response)
+    msg = json_response['msg']
+    return msg
 
 
 
-# #上传文件到知识库并进行向量化
-# #@file_list  上传的文件(单文件，多文件) 文件列表list
-# #@name  知识库名称  str
-# #@override 覆盖已有文件  boolean
-# #@to_vector_store 上传文件后是否进行向量化  boolean
-# #@chunk_size  知识库中单段文本最大长度  int
-# #@chunk_overlap 相邻文本重合长度  int
-# #@zh_title_enhance  是否开启中文标题加强  boolean
-# #@docs  自定义的docs，需要转为json字符串  str
-# #@not_refresh_vs_cache  暂不保存向量库（用于FAISS）  boolean
-# #@
-# def upload_docs(file_list,name,override=False,to_vector_store=True,chunk_size=250,chunk_overlap=50,zh_title_enhance=False,docs='',not_refresh_vs_cache=False):
-#     response = requests.post("http://172.17.0.42:7861/knowledge_base/upload_docs",files=file_list,data={
-#         "knowledge_base_name":name,
-#         "override":override,
-#         "to_vector_store":to_vector_store,
-#         "chunk_size":chunk_size,
-#         "chunk_overlap":chunk_overlap,
-#         "zh_title_enhance":zh_title_enhance,
-#         "docs":docs,
-#         "not_refresh_vs_cache":not_refresh_vs_cache
-#     })
-#     json_response = response.json()
-#     print(json_response)
 
-# # upload_docs(file_list={'files':open('test1.txt','r')},name="test")
-
-
-
-# # delete_docs('test',["test1.txt"])
-    
-# def update_info(name,description):
-#     response = requests.post("http://172.17.0.42:7861/knowledge_base/update_info",json={
-#     "knowledge_base_name": name,
-#     "kb_info": description
-#     },headers={"Content-Type":"application/json"})
-#     json_response = response.json()
-#     print(json_response,'')
-
-# # update_info("test","这是一个知识库")
 
 
 # def chat(question,name):
