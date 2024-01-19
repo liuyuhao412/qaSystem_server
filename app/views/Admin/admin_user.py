@@ -98,6 +98,8 @@ def update_password():
     username = request.args.get('username')
     new_pwd = request.args.get('new_pwd')
     confirm_pwd = request.args.get('confirm_pwd')
+    if not username:
+        return jsonify({'code':0,'msg':'该用户不存在'})
     if not new_pwd:
         return jsonify({'code':0,'msg':'请输入新密码'})
     elif not confirm_pwd:
