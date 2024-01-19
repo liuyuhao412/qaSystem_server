@@ -1,4 +1,4 @@
-from .. import admin_view,to_json,paginate
+from . import admin_view,to_json,paginate
 from app.views.Api import get_kb_list,create_knowledge,delete_knowledge,get_list_files,delete_docs
 from flask import request,jsonify
 

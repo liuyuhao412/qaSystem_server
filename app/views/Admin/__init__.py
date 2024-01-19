@@ -38,4 +38,4 @@ def paginate(data_list, page_number, page_size):
 from .admin_log import *
 from .admin_code import *
 from .admin_user import *
-from .model.admin_model import *
+from .admin_model import *
