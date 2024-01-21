@@ -18,20 +18,18 @@ def upload_file():
         file_name = file.filename
         file_path = UPLOAD_PATH + file_name
         file.save(file_path)
-        
-    return jsonify({"file_name": file_name})
+    return jsonify({"code":1,"msg":"上传成功","file":file_name})
 
 @admin_view.route('/admin_model/upload_form',methods=['post'])
 def upload_form():
     kb_name = request.args.get('kb_name')
-    file_lists = request.args.getlist('file_list[]')
+    file = request.args.get('file')
     chunk_size_max_length = request.args.get('chunk_size_max_length')
     chunk_overlap_length = request.args.get('chunk_overlap_length')
     zh_title_enhance = request.args.get('zh_title_enhance')
-    # if kb_name == '':
-    #     return jsonify({'code':0,'msg':'请先选择知识库'})
+    if kb_name == '':
+        return jsonify({'code':0,'msg':'请先选择知识库'})
+    file = {'files':open(UPLOAD_PATH + file,'rb') }
+    msg = upload_docs(file,kb_name,chunk_size_max_length,chunk_overlap_length,zh_title_enhance)
 
-    file_list = {'files':open(UPLOAD_PATH + filename,'rb') for filename in file_lists}
-    print(file_list)
-    # msg = upload_docs(file_list,kb_name,chunk_size_max_length,chunk_overlap_length,zh_title_enhance)
-    return jsonify({'code':1,'msg':"msg"})
+    return jsonify({'code':1,'msg':msg})

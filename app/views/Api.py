@@ -93,24 +93,21 @@ def upload_docs(file_list,name,chunk_size=250,chunk_overlap=50,zh_title_enhance=
 
 
 
-# def chat(question,name):
+# def chat(question,name,top_k,score_threshold,temperature):
 #     response = requests.post("http://172.17.0.42:7861/chat/knowledge_base_chat", json={
 #         "query": question,
 #         "knowledge_base_name":name,
-#         "top_k": 3,
-#         "score_threshold": 1,
+#         "top_k": top_k,
+#         "score_threshold": score_threshold,
 #         "history":[],
 #         "stream": False,
 #         "model_name": "chatglm3-6b",
-#         "temperature": 0.7,
+#         "temperature": temperature,
 #         "max_tokens": 0,
 #         "prompt_name": "default"
 #         },headers={"Content-Type":"application/json;charset=utf-8"})
 #     json_response = response.json()['answer']
 #     print(json_response)
-    
 
-
-# # chat("你好","test")
 
 
