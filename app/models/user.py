@@ -77,20 +77,11 @@ class LLMConfigModel(db.Model):
     key = db.Column(db.String(255))
     value = db.Column(db.String(255))
 
-# class KBListModel(db.Model):
-#     __tablename__ = "kb_list"
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     kb_name = db.Column(db.String(255), nullable=False)
-
-#     def to_json(self):
-#         return {
-#             'id':self.id,
-#             'kb_name':self.kb_name
-#         }
-
-# class FilesListModel(db.Model):
-#     __tablename__ = "files_list"
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     file_name = db.Column(db.String(255), nullable=False)
-#     kb_id = db.Column(db.Integer, db.ForeignKey('kb_list.id'))
-#     kb_name = db.Column(db.String(255), nullable=False)
+class chatHistoryModel(db.Model):
+    __tablename__= "chat_history"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    message = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(255), nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    username = db.Column(db.String(255), nullable=False)
