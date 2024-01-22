@@ -85,3 +85,15 @@ class chatHistoryModel(db.Model):
     time = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     username = db.Column(db.String(255), nullable=False)
+
+    def to_json(self):
+        time = self.time
+        time = time.strftime("%Y-%m-%d %H:%M:%S")
+        return {
+            'id': self.id,
+            'message':self.message,
+            'role':self.role,
+            'time':time,
+            'user_id':self.user_id,
+            'username':self.username,
+        }
