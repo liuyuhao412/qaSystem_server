@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
 from config import config
 db = SQLAlchemy()
 from flask_mail import Mail

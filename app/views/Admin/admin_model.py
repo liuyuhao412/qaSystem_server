@@ -59,3 +59,4 @@ def del_doc():
     filename = request.args.get('filename', type=str)
     code,msg = delete_docs(kb_name,filename)
     return jsonify({'code':code,'msg':msg})
+

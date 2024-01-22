@@ -40,3 +40,4 @@ from .admin_code import *
 from .admin_user import *
 from .admin_model import *
 from .upload_file import *
+from .admin_config import *

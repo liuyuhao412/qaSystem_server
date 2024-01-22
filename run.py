@@ -4,5 +4,7 @@ from app.models import user
 
 app = create_app('development')
 
+
+
 if __name__ == '__main__':
     app.run()   

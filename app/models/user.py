@@ -74,13 +74,13 @@ class LoginLogModel(db.Model):
 class LLMConfigModel(db.Model):
     __tablename__ = "llm_config"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    key = db.Column(db.String(255))
+    key = db.Column(db.String(255), unique=True)
     value = db.Column(db.String(255))
 
 class chatHistoryModel(db.Model):
     __tablename__= "chat_history"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    message = db.Column(db.String(255), nullable=False)
+    message = db.Column(db.TEXT, nullable=False)
     role = db.Column(db.String(255), nullable=False)
     time = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

@@ -1,5 +1,9 @@
 import requests
 base_url = "http://172.17.0.42:7861"
+top_k = 3
+score_threshold = 1.0
+temperature = 0.7
+
 '''
 获取知识库列表
 '''
@@ -37,7 +41,7 @@ def delete_knowledge(name):
 @name  知识库的名称  str
 '''
 def get_list_files(name):
-    response = requests.get("http://172.17.0.42:7861/knowledge_base/list_files?knowledge_base_name="+name,headers={"Content-Type":"application/json"})
+    response = requests.get(base_url + "/knowledge_base/list_files?knowledge_base_name="+name,headers={"Content-Type":"application/json"})
     json_response = response.json()
     msg = json_response['msg']
     code = json_response['code']
@@ -52,7 +56,7 @@ def get_list_files(name):
 @file  文件名称  str
 '''
 def delete_docs(name,file):
-    response = requests.post("http://172.17.0.42:7861/knowledge_base/delete_docs",json={
+    response = requests.post(base_url + "/knowledge_base/delete_docs",json={
     "knowledge_base_name": name,
     "file_names": [file],
     "delete_content": False,
@@ -73,7 +77,7 @@ def delete_docs(name,file):
 @zh_title_enhance  是否开启中文标题加强  boolean
 '''
 def upload_docs(file_list,name,chunk_size=250,chunk_overlap=50,zh_title_enhance=False):
-    response = requests.post("http://172.17.0.42:7861/knowledge_base/upload_docs",files=file_list,data={
+    response = requests.post(base_url + "/knowledge_base/upload_docs",files=file_list,data={
         "knowledge_base_name":name,
         "override":False,
         "to_vector_store":True,
@@ -87,27 +91,30 @@ def upload_docs(file_list,name,chunk_size=250,chunk_overlap=50,zh_title_enhance=
     print(json_response)
     msg = json_response['msg']
     return msg
-
-
-
-
-
-
-# def chat(question,name,top_k,score_threshold,temperature):
-#     response = requests.post("http://172.17.0.42:7861/chat/knowledge_base_chat", json={
-#         "query": question,
-#         "knowledge_base_name":name,
-#         "top_k": top_k,
-#         "score_threshold": score_threshold,
-#         "history":[],
-#         "stream": False,
-#         "model_name": "chatglm3-6b",
-#         "temperature": temperature,
-#         "max_tokens": 0,
-#         "prompt_name": "default"
-#         },headers={"Content-Type":"application/json;charset=utf-8"})
-#     json_response = response.json()['answer']
-#     print(json_response)
+'''
+聊天
+@question  问题 str
+@name  知识库名称  str
+@top_k 匹配知识条数 int
+@score_threshold   知识匹配分数阈值 float
+@temperature  float
+'''
+def chat(question,name='Olympics',top_k=top_k,score_threshold=score_threshold,temperature=temperature):
+    response = requests.post("http://172.17.0.42:7861/chat/knowledge_base_chat", json={
+        "query": question,
+        "knowledge_base_name":name,
+        "top_k": top_k,
+        "score_threshold": score_threshold,
+        "history":[],
+        "stream": False,
+        "model_name": "chatglm3-6b",
+        "temperature": temperature,
+        "max_tokens": 0,
+        "prompt_name": "default"
+        },headers={"Content-Type":"application/json;charset=utf-8"})
+    json_response = response.json()
+    answer = json_response['answer']
+    return answer
 
 
 
