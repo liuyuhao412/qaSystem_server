@@ -1,6 +1,6 @@
 from . import admin_view,md5_encryption,is_valid_email,check_password
 from flask import request,jsonify
-from app.models.user import UserModel,VerificationCodeModel,LoginLogModel
+from app.models.user import UserModel,VerificationCodeModel,LoginLogModel,chatHistoryModel
 from datetime import datetime,timedelta
 from app import db
 
@@ -77,8 +77,11 @@ def delete_user():
     email = request.args.get('email')
     user = UserModel.query.filter(UserModel.email==email).first()
     Logs = LoginLogModel.query.filter(LoginLogModel.user_id == user.id).all()
+    historys = chatHistoryModel.query.filter(chatHistoryModel.user_id == user.id).all()
     for Log in Logs:
         db.session.delete(Log)
+    for history in historys:
+        db.session.delete(history)
     VerificationCode = VerificationCodeModel.query.filter(VerificationCodeModel.email==email).first()
     db.session.delete(user) 
     db.session.delete(VerificationCode) 
