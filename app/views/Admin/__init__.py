@@ -42,4 +42,5 @@ from .admin_model import *
 from .upload_file import *
 from .admin_config import *
 from .admin_history import *
+from .admin_home import *
 

@@ -100,7 +100,7 @@ def upload_docs(file_list,name,chunk_size=250,chunk_overlap=50,zh_title_enhance=
 @temperature  float
 '''
 def chat(question,name='Olympics',top_k=top_k,score_threshold=score_threshold,temperature=temperature):
-    response = requests.post("http://172.17.0.42:7861/chat/knowledge_base_chat", json={
+    response = requests.post( base_url + "/chat/knowledge_base_chat", json={
         "query": question,
         "knowledge_base_name":name,
         "top_k": top_k,
