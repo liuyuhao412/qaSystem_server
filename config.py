@@ -30,6 +30,7 @@ class DevelopmengConfig(Config):
     MAIL_DEFAULT_SENDER = 'liuyuhaoweb@163.com'
 
 
+
 class TestingConfig(Config):
     TESTING = True
 
