@@ -14,9 +14,9 @@ def login():
     username = request.args.get('Username').strip()
     password = request.args.get('Password').strip()
     if username == '':
-        return jsonify({'code':'0', 'msg': 'Please input username'})
+        return jsonify({'code':'0', 'msg': '请输入账号'})
     elif password =='':
-        return jsonify({'code':'0', 'msg': 'Please input password'})
+        return jsonify({'code':'0', 'msg': '请输入密码'})
     else:
         loginUser = UserModel.query.filter(UserModel.username==username).first()
         if loginUser:
@@ -28,7 +28,7 @@ def login():
                     db.session.add(LoginLog)
                     db.session.commit()
                     store = {'token':generate_random_token(),'username':loginUser.username,'role':loginUser.role}
-                    return  jsonify({'code':'2','store':store ,'msg': 'Login successful'})
+                    return  jsonify({'code':'2','store':store ,'msg': '登陆成功'})
                 else:
                     time = datetime.utcnow() + timedelta(hours=8)
                     role = loginUser.role
@@ -38,6 +38,6 @@ def login():
                     store = {'token':generate_random_token(),'username':loginUser.username,'role':loginUser.role}
                     return jsonify({'code':'1', 'store':store,'msg': 'Login successful'}) 
             else:
-                return jsonify({'code':'0','msg':'Username or password error'})
+                return jsonify({'code':'0','msg':'账号或密码错误'})
         else:
-            return jsonify({'code':'0','msg':'Username or password error'})
+            return jsonify({'code':'0','msg':'账号或密码错误'})
