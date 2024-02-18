@@ -11,6 +11,7 @@ def login():
     ip = request.headers.get('X-Forwarded-For')
     if not ip:
         ip = request.remote_addr
+
     username = request.args.get('Username').strip()
     password = request.args.get('Password').strip()
     if username == '':
@@ -36,7 +37,7 @@ def login():
                     db.session.add(LoginLog)
                     db.session.commit()
                     store = {'token':generate_random_token(),'username':loginUser.username,'role':loginUser.role}
-                    return jsonify({'code':'1', 'store':store,'msg': 'Login successful'}) 
+                    return jsonify({'code':'1', 'store':store,'msg': '登陆成功'}) 
             else:
                 return jsonify({'code':'0','msg':'账号或密码错误'})
         else:
