@@ -10,6 +10,7 @@ from app import db
 def login():
     question = request.args.get('question')
     username = request.args.get('username')
+
     '''
     获取模型配置参数
     '''

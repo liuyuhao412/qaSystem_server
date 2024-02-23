@@ -11,7 +11,6 @@ def get_user_history():
     if not role:
         role = ''
     query = chatHistoryModel.query
-    print(username)
     query = query.filter(chatHistoryModel.username==username)
     if role!='':
         query = query.filter(chatHistoryModel.role.like('%{role}%'.format(role=role)))
