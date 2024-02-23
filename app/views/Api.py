@@ -1,5 +1,6 @@
 import requests
-base_url = "http://172.17.0.42:7861"
+import json
+base_url = "http://172.17.0.110:7861"
 top_k = 3
 score_threshold = 1.0
 temperature = 0.7
@@ -88,7 +89,6 @@ def upload_docs(file_list,name,chunk_size=250,chunk_overlap=50,zh_title_enhance=
         "not_refresh_vs_cache":False
     })
     json_response = response.json()
-    print(json_response)
     msg = json_response['msg']
     return msg
 '''
@@ -112,9 +112,7 @@ def chat(question,name='Olympics',top_k=top_k,score_threshold=score_threshold,te
         "max_tokens": 0,
         "prompt_name": "default"
         },headers={"Content-Type":"application/json;charset=utf-8"})
-    json_response = response.json()
+    json_response = response.text.split("data: ")[1]
+    json_response = json.loads(json_response)
     answer = json_response['answer']
     return answer
-
-
-
