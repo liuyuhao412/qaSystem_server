@@ -7,7 +7,7 @@ from app import db
 
 
 @user_view.route('/chat',methods=['POST'])
-def login():
+def chat():
     question = request.args.get('question')
     username = request.args.get('username')
 
