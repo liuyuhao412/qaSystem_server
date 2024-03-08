@@ -1,16 +1,22 @@
 from . import user_view
 from flask import request,jsonify
-from app.views.Api import chat
+from app.views.Api import chat,GPT
 from app.models.user import chatHistoryModel,UserModel,LLMConfigModel
 from datetime import datetime,timedelta
 from app import db
+import json
 
 
 @user_view.route('/chat',methods=['POST'])
-def chat():
+def chat_question():
     question = request.args.get('question')
     username = request.args.get('username')
-
+    history = request.args.get('list')
+    if history is None:
+        history = []
+   
+    history = json.loads(history)
+    print(history)
     '''
     获取模型配置参数
     '''
@@ -26,7 +32,8 @@ def chat():
     questionModel = chatHistoryModel(message=question,role='user',time=datetime.utcnow() + timedelta(hours=8),user_id=user.id,username = user.username)
     db.session.add(questionModel)
     db.session.commit()
-    answer = chat(question=question,name=kb_name,top_k=top_k,score_threshold=score_threshold,temperature=score_Temperature)
+    #answer = GPT(question=question,temperature=score_Temperature,history=history)
+    answer = chat(question=question,name=kb_name,top_k=top_k,score_threshold=score_threshold,temperature=score_Temperature ,history=history)
     answerModel = chatHistoryModel(message=answer,role='system',time=datetime.utcnow() + timedelta(hours=8),user_id=user.id,username = user.username)
     db.session.add(answerModel)
     db.session.commit()

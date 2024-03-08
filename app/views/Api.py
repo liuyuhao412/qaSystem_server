@@ -92,20 +92,21 @@ def upload_docs(file_list,name,chunk_size=250,chunk_overlap=50,zh_title_enhance=
     msg = json_response['msg']
     return msg
 '''
-聊天
+知识库问答
 @question  问题 str
 @name  知识库名称  str
 @top_k 匹配知识条数 int
 @score_threshold   知识匹配分数阈值 float
 @temperature  float
+@history    []list
 '''
-def chat(question,name='Olympics',top_k=top_k,score_threshold=score_threshold,temperature=temperature):
+def chat(question,name='Olympics',top_k=top_k,score_threshold=score_threshold,temperature=temperature,history=[]):
     response = requests.post( base_url + "/chat/knowledge_base_chat", json={
         "query": question,
         "knowledge_base_name":name,
         "top_k": top_k,
         "score_threshold": score_threshold,
-        "history":[],
+        "history":history,
         "stream": False,
         "model_name": "chatglm3-6b",
         "temperature": temperature,
@@ -116,3 +117,30 @@ def chat(question,name='Olympics',top_k=top_k,score_threshold=score_threshold,te
     json_response = json.loads(json_response)
     answer = json_response['answer']
     return answer
+
+'''
+聊天
+@question  问题 str
+@temperature  float
+@history    []list
+'''
+def GPT(question,temperature=temperature,history=[]):
+    response = requests.post( base_url + "/chat/chat", json={
+        "query": question,
+        "conversation_id": "",
+        "history_len": -1,
+        "score_threshold": score_threshold,
+        "history":history,
+        "stream": False,
+        "model_name": "chatglm3-6b",
+        "temperature": temperature,
+        "max_tokens": 0,
+        "prompt_name": "default"
+        },headers={"Content-Type":"application/json;charset=utf-8"})
+    print(response.text)
+    json_response = response.text.split("data: ")[1]
+    json_response = json.loads(json_response)
+    answer = json_response['text']
+    return answer
+
+ 
