@@ -103,7 +103,7 @@ def register():
     else:
         registerUser = UserModel.query.filter(UserModel.email==email).first()
         if registerUser:
-            return jsonify({'code':'0', 'msg': 'Email is already'})
+            return jsonify({'code':'0', 'msg': '邮箱已经存在'})
         else:
             register_time = datetime.utcnow() + timedelta(hours=8)
             md5_pwd = md5_encryption(password)
