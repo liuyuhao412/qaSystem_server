@@ -1,5 +1,6 @@
 import requests
 import json
+#base_url = "http://211.93.18.69:57389"
 base_url = "http://172.17.0.110:7861"
 top_k = 3
 score_threshold = 1.0

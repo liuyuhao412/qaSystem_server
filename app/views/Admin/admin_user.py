@@ -58,16 +58,18 @@ def add_user():
 
 @admin_view.route('/admin_user/update_user',methods=['POST'])
 def update_user():
+    id = int(request.args.get('id'))
     username = request.args.get('username')
     email = request.args.get('email')
     role = request.args.get('role')
     if not username:
         return jsonify({'code':0,'msg':'请输入用户'})
-    user = UserModel.query.filter(UserModel.email==email).first()
+    user = UserModel.query.filter(UserModel.id==id).first()
     Logs = LoginLogModel.query.filter(LoginLogModel.user_id == user.id).all()
     for Log in Logs:
         Log.username = username
     user.username = username
+    user.email = email
     user.role = role
     db.session.commit()
     return jsonify({'code':'1', 'msg': '修改用户信息成功'})
